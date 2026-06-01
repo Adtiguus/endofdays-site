@@ -1,0 +1,299 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>END OF DAYS — The Survival AI You Can Trust</title>
+<meta name="description" content="A fully offline survival AI. It cites the manual and tells you when it's guessing. Works with no internet, from the phone in your pocket.">
+<style>
+ :root{--bg:#0c0f14;--panel:#131a24;--field:#1d2836;--ans:#0f141c;--line:#2a3644;
+   --amb:#ffb020;--steel:#7fa8c9;--ink:#eaf0f6;--mut:#8a98a8;--ok:#5ad17a;--red:#ff5a5a;--onacc:#1a1206;
+   --mono:ui-monospace,'Cascadia Code',Consolas,'DejaVu Sans Mono',monospace;}
+ *{box-sizing:border-box;margin:0;padding:0}
+ html{scroll-behavior:smooth}
+ body{background:var(--bg);color:var(--ink);font-family:var(--mono);line-height:1.6;}
+ a{color:var(--amb);text-decoration:none}
+ .wrap{max-width:980px;margin:0 auto;padding:0 18px}
+ .mut{color:var(--mut)} .amb{color:var(--amb)} .steel{color:var(--steel)} .ok{color:var(--ok)}
+ /* nav */
+ nav{position:sticky;top:0;z-index:50;background:rgba(12,15,20,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+ .navin{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;max-width:980px;margin:0 auto;flex-wrap:wrap;gap:8px}
+ .brand{font-size:16px;letter-spacing:3px;color:var(--amb);text-transform:uppercase;font-weight:bold}
+ .brand small{display:block;font-size:8px;letter-spacing:2px;color:var(--mut)}
+ .navlinks{display:flex;gap:14px;font-size:11px;letter-spacing:1px;text-transform:uppercase;flex-wrap:wrap}
+ .navlinks a{color:var(--mut)} .navlinks a:hover{color:var(--ink)}
+ .themes{display:flex;gap:5px}
+ .sw{width:16px;height:16px;border-radius:3px;border:1px solid var(--line);cursor:pointer}
+ .sw.on{border-color:var(--ink);box-shadow:0 0 6px currentColor}
+ /* sections */
+ section{padding:64px 0;border-bottom:1px solid var(--line)}
+ .tag{font-size:10px;letter-spacing:3px;color:var(--amb);text-transform:uppercase;margin-bottom:14px}
+ h1{font-size:clamp(28px,5vw,52px);letter-spacing:1px;line-height:1.15;text-transform:uppercase;margin-bottom:18px}
+ h2{font-size:clamp(22px,3.5vw,34px);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
+ h3{font-size:16px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+ p{margin-bottom:14px;color:#cdd7e1}
+ .lead{font-size:18px;color:var(--steel)}
+ .hero{padding:80px 0 70px;background:linear-gradient(180deg,var(--panel),var(--bg))}
+ .classbar{background:var(--panel);border-bottom:1px solid var(--line);text-align:center;
+   font-size:10px;letter-spacing:3px;color:var(--amb);text-transform:uppercase;padding:6px}
+ .btn{display:inline-block;background:var(--amb);color:var(--onacc);font-family:var(--mono);font-weight:bold;
+   padding:14px 26px;letter-spacing:2px;text-transform:uppercase;font-size:13px;border:none;border-radius:6px;cursor:pointer}
+ .btn.ghost{background:transparent;color:var(--amb);border:1px solid var(--amb)}
+ .btn:hover{filter:brightness(1.08)}
+ .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+ .grid{display:grid;gap:16px}
+ .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:repeat(2,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+ @media(max-width:760px){.g3,.g2,.g4{grid-template-columns:1fr}}
+ .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:20px}
+ .card.acc{border-top:3px solid var(--amb)}
+ /* trust callout */
+ .trust{background:var(--ans);border:1px solid var(--line);border-left:3px solid var(--amb);border-radius:6px;padding:18px;margin-top:14px}
+ .srcline{font-size:11px;letter-spacing:1px;color:var(--steel);text-transform:uppercase;margin-top:8px}
+ .warnline{font-size:11px;letter-spacing:1px;color:#ff8c8c;text-transform:uppercase;margin-top:8px;border:1px solid var(--red);border-radius:4px;padding:8px;background:#1f0c0c}
+ /* table */
+ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;overflow:hidden;border-radius:8px}
+ th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+ th{background:var(--panel);text-transform:uppercase;font-size:10px;letter-spacing:1px;color:var(--mut)}
+ td.us{background:rgba(255,176,32,.07)}
+ th.us{background:var(--field);color:var(--amb)}
+ .yes{color:var(--ok);font-weight:bold} .no{color:var(--red)}
+ .tnote{font-size:11px;color:var(--mut);margin-top:8px}
+ .scroll{overflow-x:auto}
+ /* demo */
+ .demobar{background:#2a1c06;border:1px solid var(--amb);color:var(--amb);font-size:11px;letter-spacing:2px;
+   text-transform:uppercase;text-align:center;padding:8px;border-radius:6px;margin-bottom:14px}
+ .field{position:relative}
+ .field::before{content:">";position:absolute;left:12px;top:14px;color:var(--amb);font-size:16px}
+ #demoq{width:100%;background:var(--field);color:var(--ink);border:1px solid var(--line);border-radius:6px;
+   padding:14px 14px 14px 28px;font-family:var(--mono);font-size:16px;outline:none}
+ #demoq:focus{border-color:var(--amb)}
+ .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+ .chip{font-size:11px;color:var(--steel);border:1px solid var(--line);border-radius:14px;padding:5px 11px;cursor:pointer;background:var(--panel)}
+ .chip:hover{border-color:var(--amb);color:var(--ink)}
+ #demoout{margin-top:16px;border:1px solid var(--line);border-top:2px solid var(--amb);background:var(--ans);border-radius:0 0 6px 6px;padding:18px;min-height:80px}
+ .rhead{font-size:10px;letter-spacing:3px;color:var(--amb);text-transform:uppercase;margin-bottom:10px}
+ .ans{font-size:16px;white-space:pre-wrap}
+ .stump h3{color:var(--amb)}
+ /* pricing */
+ .price{font-size:32px;color:var(--amb);letter-spacing:1px} .price small{font-size:12px;color:var(--mut)}
+ ul.feat{list-style:none;font-size:13px;color:#cdd7e1;margin:12px 0}
+ ul.feat li{padding:5px 0 5px 20px;position:relative}
+ ul.feat li::before{content:"›";position:absolute;left:0;color:var(--amb)}
+ .badge{display:inline-block;font-size:9px;letter-spacing:2px;text-transform:uppercase;background:var(--amb);color:var(--onacc);padding:3px 8px;border-radius:10px;margin-bottom:8px}
+ /* faq */
+ details{border:1px solid var(--line);border-radius:6px;padding:12px 16px;margin-bottom:10px;background:var(--panel)}
+ summary{cursor:pointer;font-size:14px;letter-spacing:1px;text-transform:uppercase;color:var(--ink)}
+ details[open] summary{color:var(--amb);margin-bottom:8px}
+ footer{padding:40px 0;text-align:center;font-size:12px;color:var(--mut)}
+ .disc{font-size:11px;color:var(--mut);border-top:1px solid var(--line);margin-top:24px;padding-top:16px}
+</style></head>
+<body>
+<div class="classbar">// offline // no uplink // operator use only //</div>
+
+<nav><div class="navin">
+  <div class="brand">END OF DAYS<small>tactical knowledge terminal</small></div>
+  <div class="navlinks">
+    <a href="#how">How</a><a href="#trust">Trust</a><a href="#demo">Demo</a>
+    <a href="#compare">Compare</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a>
+  </div>
+  <div class="themes" id="themes" title="Change theme"></div>
+</div></nav>
+
+<!-- HERO -->
+<header class="hero"><div class="wrap">
+  <div class="tag">// when the grid goes down</div>
+  <h1>The survival AI you can <span class="amb">actually trust</span>.</h1>
+  <p class="lead">A complete offline knowledge brain — medical, repair, food, water, defense — that runs with <b>no internet</b>, from the phone already in your pocket. It cites the manual it's reading, and tells you when it's guessing. Because in a crisis, a confident wrong answer is the dangerous one.</p>
+  <div class="row">
+    <a class="btn" href="#demo">Try the live demo</a>
+    <a class="btn ghost" href="#pricing">See the kits</a>
+  </div>
+  <p class="mut" style="margin-top:18px;font-size:12px">No cloud. No subscription. No one can switch it off.</p>
+</div></header>
+
+<!-- PROBLEM -->
+<section><div class="wrap">
+  <div class="tag">// the problem</div>
+  <h2>Your knowledge lives in the cloud. The cloud needs the grid.</h2>
+  <div class="grid g3" style="margin-top:18px">
+    <div class="card"><h3>No signal, no answers</h3><p class="mut">Storm, outage, off-grid, or worse — the moment you need life-or-death information most is exactly when the internet is gone.</p></div>
+    <div class="card"><h3>AI that bluffs</h3><p class="mut">Every chatbot hands you a confident answer with no source. Fine for trivia. Deadly when it's a wound, a dose, or a downed line.</p></div>
+    <div class="card"><h3>Owned by someone else</h3><p class="mut">Accounts, subscriptions, terms of service — all of it can change or vanish. Real resilience is something you <i>own</i>.</p></div>
+  </div>
+</div></section>
+
+<!-- HOW -->
+<section id="how"><div class="wrap">
+  <div class="tag">// how it works</div>
+  <h2>A box that makes its own network.</h2>
+  <div class="grid g4" style="margin-top:18px">
+    <div class="card acc"><h3>1 · Power on</h3><p class="mut">A small, low-power box. Plug it in. It boots itself — no screen, no keyboard.</p></div>
+    <div class="card acc"><h3>2 · Join its WiFi</h3><p class="mut">It broadcasts its own network, <b>EndOfDays</b>. Your phone connects directly — no router, no internet.</p></div>
+    <div class="card acc"><h3>3 · Open a browser</h3><p class="mut">The terminal loads on your phone. Type, or tap a question.</p></div>
+    <div class="card acc"><h3>4 · Ask anything</h3><p class="mut">A local AI answers from a library of real survival manuals — fully offline.</p></div>
+  </div>
+  <p class="tnote">Power-saving modes built in — from full-detail answers down to "just the manual text," for when the battery matters most.</p>
+</div></section>
+
+<!-- TRUST -->
+<section id="trust"><div class="wrap">
+  <div class="tag">// the difference</div>
+  <h2>It shows its work.</h2>
+  <p class="lead">Other offline AIs hand you a black box. End of Days grounds every answer in a real manual, shows you the source, and raises a flag the moment it's unsure. That honesty is the whole point — it's the difference between a tool you can bet your life on and one you can't.</p>
+  <div class="trust">
+    <div class="rhead">// response — grounded</div>
+    <div class="ans">To purify water with no power: bring it to a rolling boil for at least 1 minute (3 minutes above ~6,500 ft). Let it cool, covered. Cloudy water? Filter through cloth first.</div>
+    <div class="srcline">// src: library [Where There Is No Doctor · 2 passages]</div>
+  </div>
+  <div class="trust" style="margin-top:12px">
+    <div class="rhead">// response — uncertain</div>
+    <div class="ans">That specific drug interaction isn't covered in your library.</div>
+    <div class="warnline">[ ! ] unverified — not backed by a manual. The model is estimating. Confirm before acting.</div>
+  </div>
+</div></section>
+
+<!-- DEMO -->
+<section id="demo"><div class="wrap">
+  <div class="tag">// live demo</div>
+  <h2>Ask it something.</h2>
+  <div class="demobar">⚠ Demo mode — limited preview, pre-loaded answers only. The full platform answers <i>anything</i>, live &amp; offline on your device.</div>
+  <div class="field"><input id="demoq" maxlength="120" placeholder="how do i purify water without power" autocomplete="off"></div>
+  <div class="chips" id="chips"></div>
+  <div id="demoout"><div class="mut">Type a survival question, or tap one above.</div></div>
+</div></section>
+
+<!-- COMPARE -->
+<section id="compare"><div class="wrap">
+  <div class="tag">// vs the field</div>
+  <h2>How it stacks up.</h2>
+  <div class="scroll"><table>
+    <tr><th>Capability</th><th class="us">End of Days</th><th>Doom Box</th><th>USB AI Toolkit</th><th>Open Server</th></tr>
+    <tr><td>Cites sources &amp; flags when unsure</td><td class="us"><span class="yes">YES</span></td><td><span class="no">no</span></td><td><span class="no">no</span></td><td><span class="no">no</span></td></tr>
+    <tr><td>Runs from your phone (no monitor)</td><td class="us"><span class="yes">YES</span></td><td>built-in screen</td><td>needs a PC</td><td>needs a PC</td></tr>
+    <tr><td>Makes its own WiFi</td><td class="us"><span class="yes">YES</span></td><td><span class="no">no</span></td><td>partial</td><td><span class="no">no</span></td></tr>
+    <tr><td>Curated survival library</td><td class="us"><span class="yes">YES</span></td><td>vague</td><td><span class="no">none</span></td><td><span class="yes">yes</span></td></tr>
+    <tr><td>Plug-and-play, pre-built option</td><td class="us"><span class="yes">YES</span></td><td><span class="yes">yes</span></td><td>USB only</td><td><span class="no">no</span></td></tr>
+    <tr><td>Own it — no subscription</td><td class="us"><span class="yes">YES</span></td><td><span class="yes">yes</span></td><td><span class="yes">yes</span></td><td><span class="yes">free</span></td></tr>
+  </table></div>
+  <p class="tnote">Comparison reflects publicly available product info. The one row that matters most when your life is on the line is the first one.</p>
+</div></section>
+
+<!-- PRICING -->
+<section id="pricing"><div class="wrap">
+  <div class="tag">// join the club</div>
+  <h2>Pick your door.</h2>
+  <p class="mut">One-time. No subscriptions, ever. (Prices shown are placeholders — set your own.)</p>
+  <div class="grid g3" style="margin-top:18px">
+    <div class="card">
+      <h3>Membership</h3>
+      <div class="price">$150<small> · one-time</small></div>
+      <ul class="feat">
+        <li>The full offline platform image</li>
+        <li>Curated survival library + updates</li>
+        <li>Verified-hardware shopping list</li>
+        <li>The community &amp; the playbooks</li>
+        <li>Bring your own mini-PC</li>
+      </ul>
+      <a class="btn ghost" href="#">Join</a>
+    </div>
+    <div class="card acc">
+      <span class="badge">Most popular</span>
+      <h3>The Kit</h3>
+      <div class="price">$150<small> + the box you buy</small></div>
+      <ul class="feat">
+        <li>Everything in Membership</li>
+        <li>Buy the <b>exact verified box</b> via our links</li>
+        <li>One-click setup guide</li>
+        <li>"It just works" on certified hardware</li>
+      </ul>
+      <a class="btn" href="#">Get the kit</a>
+    </div>
+    <div class="card">
+      <span class="badge">Done-for-you</span>
+      <h3>The Box</h3>
+      <div class="price">$699<small> · built &amp; shipped</small></div>
+      <ul class="feat">
+        <li>We build, image &amp; test it</li>
+        <li>Arrives ready — plug in &amp; go</li>
+        <li>No setup, no screen, no commands</li>
+        <li>Lifetime membership included</li>
+        <li><span class="mut">Ships in ~1–2 weeks (built to order)</span></li>
+      </ul>
+      <a class="btn" href="#">Order a box</a>
+    </div>
+  </div>
+</div></section>
+
+<!-- FAQ -->
+<section id="faq"><div class="wrap">
+  <div class="tag">// questions</div>
+  <h2>Straight answers.</h2>
+  <details><summary>Does it really work with zero internet?</summary><p class="mut">Yes. The AI model and the entire library live on the box. At runtime there is no uplink, no account, no cloud call. It even makes its own WiFi so your phone can reach it anywhere.</p></details>
+  <details><summary>Why does "it tells you when it's guessing" matter?</summary><p class="mut">Because a confident wrong answer is the dangerous one. Every answer is grounded in a real manual and shows its source. When the library doesn't cover something, it says so — flagged, in red — instead of bluffing.</p></details>
+  <details><summary>Do I need to be technical?</summary><p class="mut">Not for the done-for-you Box — it arrives ready; you plug it in and connect your phone. The Membership and Kit tiers involve a one-time setup with a screen, for the DIY-inclined.</p></details>
+  <details><summary>Why a lead time on the Box?</summary><p class="mut">We run lean and build to order — no warehouse of aging hardware. Your box is sourced, imaged, tested, and shipped just for you. ~1–2 weeks.</p></details>
+  <details><summary>Is this medical advice?</summary><p class="mut">No. End of Days is an offline reference tool. It surfaces information from published manuals and clearly flags anything unverified. It is not a substitute for a doctor, and nothing here is professional medical, legal, or safety advice. Always use your own judgment and seek a professional when you can.</p></details>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="brand" style="margin-bottom:8px">END OF DAYS</div>
+  <p class="mut">Offline knowledge that never goes dark.</p>
+  <div class="row" style="justify-content:center;margin-top:16px"><a class="btn" href="#demo">Try the demo</a></div>
+  <p class="disc">Demo answers are illustrative. End of Days is an informational reference tool, not professional medical, legal, or safety advice. Library content is sourced from published manuals; verify critical actions independently. © End of Days.</p>
+</div></footer>
+
+<script>
+/* ---- themes (shared with the device UI) ---- */
+var THEMES={
+ amber:{lbl:"Amber",sw:"#ffb020",v:{"--bg":"#0c0f14","--panel":"#131a24","--field":"#1d2836","--ans":"#0f141c","--line":"#2a3644","--amb":"#ffb020","--steel":"#7fa8c9","--ink":"#eaf0f6","--mut":"#8a98a8","--ok":"#5ad17a","--red":"#ff5a5a","--onacc":"#1a1206"}},
+ cyan:{lbl:"Gunmetal",sw:"#26c6d6",v:{"--bg":"#0b0f12","--panel":"#141b20","--field":"#1a262d","--ans":"#0e141a","--line":"#263138","--amb":"#26c6d6","--steel":"#6f93a8","--ink":"#e6eef2","--mut":"#7f93a0","--ok":"#45d39a","--red":"#ff6b6b","--onacc":"#04181a"}},
+ night:{lbl:"Night",sw:"#ff3b3b",v:{"--bg":"#0a0505","--panel":"#160a0a","--field":"#1f0d0d","--ans":"#100707","--line":"#3a1c1c","--amb":"#ff3b3b","--steel":"#cf8a8a","--ink":"#ffd6d6","--mut":"#9e6060","--ok":"#ff6b6b","--red":"#ff6b6b","--onacc":"#1a0000"}},
+ clean:{lbl:"Clean",sw:"#5aa0ff",v:{"--bg":"#0e1116","--panel":"#161b22","--field":"#1c232c","--ans":"#0f141a","--line":"#2a313a","--amb":"#5aa0ff","--steel":"#93a1b3","--ink":"#f0f3f7","--mut":"#8a96a6","--ok":"#5ad17a","--red":"#ff6b6b","--onacc":"#06101f"}}};
+function applyTheme(n){var t=THEMES[n]||THEMES.amber,r=document.documentElement;
+ for(var k in t.v)r.style.setProperty(k,t.v[k]);
+ try{localStorage.setItem('eod_theme',n)}catch(e){}
+ var box=document.getElementById('themes');box.innerHTML='';
+ Object.keys(THEMES).forEach(function(m){var b=document.createElement('span');
+  b.className='sw'+(m===n?' on':'');b.style.background=THEMES[m].sw;b.style.color=THEMES[m].sw;
+  b.title=THEMES[m].lbl;b.onclick=function(){applyTheme(m)};box.appendChild(b)});}
+var saved='amber';try{saved=localStorage.getItem('eod_theme')||'amber'}catch(e){}
+applyTheme(saved);
+
+/* ---- demo Q&A (pre-loaded, illustrative) ---- */
+var QA=[
+ {k:["water","purify","drink","boil"],a:"Bring it to a rolling boil for at least 1 minute (3 minutes above ~6,500 ft). Let it cool, covered. If it's cloudy, filter through clean cloth first. No heat? 8 drops of unscented household bleach per gallon, stir, wait 30 minutes.",s:"Where There Is No Doctor · Ready.gov"},
+ {k:["fire","start","matches","spark"],a:"Build your tinder bundle first (dry grass, bark shavings, char cloth). With a ferro rod, scrape sparks into the bundle, then transfer the ember to a nest of dry kindling and breathe steadily. Battery + steel wool also works in a pinch.",s:"SAS Survival Guide"},
+ {k:["cut","wound","bleed","bleeding"],a:"Apply firm direct pressure with the cleanest cloth available; keep pressing — don't peek. Elevate if you can. If bleeding soaks through, add more cloth on top, don't remove the first layer. Seek professional care as soon as possible.",s:"Where There Is No Doctor",med:true},
+ {k:["north","compass","direction","lost"],a:"Stick-and-shadow: plant a stick, mark the shadow tip, wait 15 min, mark again. The line between the two marks runs roughly east–west; the first mark is west. At night (N. hemisphere), find Polaris off the Big Dipper's pointer stars — that's north.",s:"Army FM 21-76"},
+ {k:["food","store","preserve","refrigeration","spoil"],a:"Drying and salting are your most reliable no-power methods. Keep root vegetables in a cool, dark, dry place. A buried, shaded 'cool box' or a wet-cloth evaporative pot extends shelf life. Rotate oldest first and inspect for spoilage daily.",s:"Wikibooks · Home Preservation"},
+ {k:["hypothermia","cold","freezing","shivering"],a:"Get them dry and out of the wind. Replace wet clothing, insulate from the ground, and warm the core (chest, neck, groin) with skin-to-skin contact and dry layers — not the limbs first. Warm sweet drinks if fully conscious. Handle gently. Get help.",s:"Where There Is No Doctor",med:true},
+ {k:["signal","help","rescue","sos"],a:"Three of anything means distress (3 fires in a triangle, 3 whistle blasts, 3 flashes). A signal mirror is visible for miles — aim the reflection at aircraft or distant searchers. Ground-to-air: a large 'V' means 'need assistance.'",s:"SAS Survival Guide"},
+ {k:["filter","dirty","muddy","sediment"],a:"Layer a container (bottle with the bottom cut off): cloth, then charcoal from your fire, then sand, then gravel. Pour water through to remove sediment and some contaminants. This clarifies water — it does NOT make it safe to drink; you still must boil or treat it.",s:"Wikibooks · Field Filtration"}
+];
+var chips=["how do i purify water","start a fire without matches","treat a deep cut","find north without a compass","store food without power","signal for help"];
+var cb=document.getElementById('chips');
+chips.forEach(function(c){var s=document.createElement('span');s.className='chip';s.textContent=c;
+ s.onclick=function(){document.getElementById('demoq').value=c;runDemo()};cb.appendChild(s)});
+
+function match(q){q=q.toLowerCase();var best=null,score=0;
+ QA.forEach(function(item){var s=0;item.k.forEach(function(w){if(q.indexOf(w)>-1)s++});
+  if(s>score){score=s;best=item}});return score>0?best:null;}
+
+function runDemo(){
+ var q=document.getElementById('demoq').value.trim();var out=document.getElementById('demoout');
+ if(!q){out.innerHTML='<div class="mut">Type a survival question, or tap one above.</div>';return;}
+ var hit=match(q);
+ if(hit){
+  var med=hit.med?'<div class="warnline">[ i ] informational only — not medical advice. Verify with a professional when possible.</div>':'';
+  out.innerHTML='<div class="rhead">// response</div><div class="ans">'+hit.a+'</div><div class="srcline">// src: library ['+hit.s+']</div>'+med;
+ } else {
+  out.innerHTML='<div class="stump">'+
+   '<div class="rhead">// you found the edge of the demo</div>'+
+   '<h3>Nice — that\'s a genuinely good question.</h3>'+
+   '<p class="mut">The demo only carries our pre-loaded answers, so it can\'t take this one. The <b>full platform</b> would tackle it — generating an answer <b>live, on your own device, with no internet</b> — grounded in the actual survival manuals, and flagging anything it\'s not 100% sure about.</p>'+
+   '<p class="mut">We\'ve logged your question for the community queue. Members vote on what gets added next.</p>'+
+   '<div class="row"><a class="btn" href="#pricing">Unlock the full platform</a><a class="btn ghost" href="#pricing">Notify me if it\'s added free</a></div>'+
+   '</div>';
+ }
+}
+document.getElementById('demoq').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();runDemo()}});
+document.getElementById('demoq').addEventListener('input',function(){/* live feel; submit on Enter */});
+</script>
+</body></html>
