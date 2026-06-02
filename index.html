@@ -245,7 +245,8 @@ var THEMES={
  amber:{lbl:"Amber",sw:"#ffb020",v:{"--bg":"#0c0f14","--panel":"#131a24","--field":"#1d2836","--ans":"#0f141c","--line":"#2a3644","--amb":"#ffb020","--steel":"#7fa8c9","--ink":"#eaf0f6","--mut":"#8a98a8","--ok":"#5ad17a","--red":"#ff5a5a","--onacc":"#1a1206"}},
  cyan:{lbl:"Gunmetal",sw:"#26c6d6",v:{"--bg":"#0b0f12","--panel":"#141b20","--field":"#1a262d","--ans":"#0e141a","--line":"#263138","--amb":"#26c6d6","--steel":"#6f93a8","--ink":"#e6eef2","--mut":"#7f93a0","--ok":"#45d39a","--red":"#ff6b6b","--onacc":"#04181a"}},
  night:{lbl:"Night",sw:"#ff3b3b",v:{"--bg":"#0a0505","--panel":"#160a0a","--field":"#1f0d0d","--ans":"#100707","--line":"#3a1c1c","--amb":"#ff3b3b","--steel":"#cf8a8a","--ink":"#ffd6d6","--mut":"#9e6060","--ok":"#ff6b6b","--red":"#ff6b6b","--onacc":"#1a0000"}},
- clean:{lbl:"Clean",sw:"#5aa0ff",v:{"--bg":"#0e1116","--panel":"#161b22","--field":"#1c232c","--ans":"#0f141a","--line":"#2a313a","--amb":"#5aa0ff","--steel":"#93a1b3","--ink":"#f0f3f7","--mut":"#8a96a6","--ok":"#5ad17a","--red":"#ff6b6b","--onacc":"#06101f"}}};
+ clean:{lbl:"Clean",sw:"#5aa0ff",v:{"--bg":"#0e1116","--panel":"#161b22","--field":"#1c232c","--ans":"#0f141a","--line":"#2a313a","--amb":"#5aa0ff","--steel":"#93a1b3","--ink":"#f0f3f7","--mut":"#8a96a6","--ok":"#5ad17a","--red":"#ff6b6b","--onacc":"#06101f"}},
+ slate:{lbl:"Slate",sw:"#7aa2f7",v:{"--bg":"#1b2230","--panel":"#242d3d","--field":"#2d3850","--ans":"#1f2734","--line":"#3c4a66","--amb":"#7aa2f7","--steel":"#9fb0cc","--ink":"#e8edf5","--mut":"#9aa6bc","--ok":"#6fd18a","--red":"#ff6b6b","--onacc":"#0e1626"}}};
 function applyTheme(n){var t=THEMES[n]||THEMES.amber,r=document.documentElement;
  for(var k in t.v)r.style.setProperty(k,t.v[k]);
  try{localStorage.setItem('eod_theme',n)}catch(e){}
