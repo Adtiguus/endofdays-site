@@ -59,36 +59,52 @@
     <p class="sub">This portal isn't connected to its database yet. (Waiting on the Supabase project URL + anon key.)</p>
   </div>
 
-  <!-- AUTH -->
-  <div id="authView" class="hide">
-    <div class="card">
-      <h1 id="authTitle">Create your free account</h1>
-      <p class="sub" id="authSub">Free access to the survival demo. No card. We'll never sell your info.</p>
-      <div id="nameWrap">
-        <label>Name</label>
-        <input id="name" autocomplete="name" placeholder="Your name">
-      </div>
-      <label>Email</label>
-      <input id="email" type="email" autocomplete="email" placeholder="you@example.com">
-      <label>Password</label>
-      <input id="password" type="password" autocomplete="current-password" placeholder="••••••••">
-      <button class="btn" id="authBtn" onclick="doAuth()">Create free account</button>
-      <div class="link" id="toggleAuth" onclick="toggleMode()">Already a member? Log in</div>
-      <div id="authMsg"></div>
-    </div>
-    <p class="small" style="text-align:center">By continuing you agree to our terms &amp; privacy policy.</p>
-  </div>
-
-  <!-- PORTAL -->
+  <!-- PORTAL — no signup required to try it -->
   <div id="portalView" class="hide">
     <div class="demobar">⚠ Demo access — pre-loaded answers only. The full platform answers anything, offline, on your own device.</div>
     <div class="card">
       <h1>Ask a survival question</h1>
-      <p class="sub" id="welcome"></p>
+      <p class="sub" id="welcome">No account needed — ask away. Every question helps decide what gets added next.</p>
       <div class="field"><input id="q" maxlength="160" placeholder="how do i purify water without power" autocomplete="off"></div>
       <div class="chips" id="chips"></div>
       <button class="btn" onclick="ask()">Transmit query</button>
       <div class="ans" id="ans"></div>
+    </div>
+
+    <!-- shown when NOT logged in: soft account prompt (capture AFTER they try, no hard gate) -->
+    <div id="anonPrompt">
+      <div class="card">
+        <h1 id="authTitle">Create your free account</h1>
+        <p class="sub" id="authSub">Save your questions, get notified when answers are added, and unlock member updates. No card. We'll never sell your info.</p>
+        <div id="nameWrap">
+          <label>Name</label>
+          <input id="name" autocomplete="name" placeholder="Your name">
+        </div>
+        <label>Email</label>
+        <input id="email" type="email" autocomplete="email" placeholder="you@example.com">
+        <label>Password</label>
+        <input id="password" type="password" autocomplete="current-password" placeholder="••••••••">
+        <button class="btn" id="authBtn" onclick="doAuth()">Create free account</button>
+        <div class="link" id="toggleAuth" onclick="toggleMode()">Already a member? Log in</div>
+        <div id="authMsg"></div>
+      </div>
+      <p class="small" style="text-align:center">By continuing you agree to our terms &amp; privacy policy.</p>
+    </div>
+
+    <!-- shown when logged in: the paid download, or an upgrade nudge -->
+    <div id="memberBox" class="hide">
+      <div class="card hide" id="downloadCard">
+        <h1>Your platform download</h1>
+        <p class="sub">Members-only — this is the paid installer. Keep your link private.</p>
+        <a class="btn" id="dlBtn" href="#" target="_blank" rel="noopener">Download the platform</a>
+        <p class="small" id="dlVer" style="text-align:center;margin-top:8px"></p>
+        <p class="small" style="margin-top:10px">Setup: get a verified mini-PC, unzip, run <b>./00_install_offgrid.sh</b>, then join the box's Wi-Fi from your phone.</p>
+      </div>
+      <div class="card" id="upgradeCard">
+        <h1>Unlock the full platform</h1>
+        <p class="sub">Your free account saves your questions. To download the offline platform image + the verified-hardware list, upgrade to membership.</p>
+        <a class="btn" href="/#pricing">See membership →</a>
+      </div>
     </div>
   </div>
 </div>
@@ -133,15 +149,40 @@ if(!configured){
 
 function render(session){
   user = session ? session.user : null;
-  document.getElementById('authView').classList.toggle('hide', !!user);
-  document.getElementById('portalView').classList.toggle('hide', !user);
+  // the ask box is ALWAYS available — no signup needed to try it
+  document.getElementById('portalView').classList.remove('hide');
   document.getElementById('logoutBtn').classList.toggle('hide', !user);
+  document.getElementById('anonPrompt').classList.toggle('hide', !!user);
+  document.getElementById('memberBox').classList.toggle('hide', !user);
   if(user){
     var nm = (user.user_metadata && user.user_metadata.name) || user.email;
-    document.getElementById('welcome').textContent = "Signed in as " + nm + " · demo access";
+    document.getElementById('welcome').textContent = "Signed in as " + nm + " · ask anything below.";
     // upsert profile (capture user info)
     sb.from('profiles').upsert({ id:user.id, email:user.email, name:(user.user_metadata&&user.user_metadata.name)||null }).then(function(){});
+    checkEntitlement();
+  } else {
+    document.getElementById('welcome').textContent = "No account needed — ask away. Every question helps decide what gets added next.";
   }
+}
+
+/* ---- paid? then reveal the members-only download (URL never ships in this page) ---- */
+function checkEntitlement(){
+  sb.from('entitlements').select('paid,tier').eq('user_id', user.id).maybeSingle().then(function(r){
+    var paid = !!(r.data && r.data.paid);
+    document.getElementById('upgradeCard').classList.toggle('hide', paid);
+    if(paid){ loadDownload(); }
+    else { document.getElementById('downloadCard').classList.add('hide'); }
+  });
+}
+function loadDownload(){
+  // releases is readable ONLY by paid members (RLS), so free/anon visitors never receive the link
+  sb.from('releases').select('url,version').eq('id','installer').maybeSingle().then(function(r){
+    if(r.data && r.data.url){
+      document.getElementById('dlBtn').href = r.data.url;
+      document.getElementById('dlVer').textContent = r.data.version ? ('Version ' + r.data.version) : '';
+      document.getElementById('downloadCard').classList.remove('hide');
+    }
+  });
 }
 
 function toggleMode(){
@@ -188,13 +229,21 @@ function ask(){
   if(hit){
     out.innerHTML='<div class="rhead">// response</div><div>'+hit.a+'</div><div class="src">// src: library ['+hit.s+']</div>';
   } else {
+    // anonymous visitors get nudged to save/sign up; logged-in free users get the upgrade pitch
+    var cta = user
+      ? '<div class="upsell"><b>Unlock the full platform →</b><div class="small" style="margin-top:6px">We logged your question. Members vote on what gets added next.</div></div>'
+      : '<div class="upsell"><b>Create a free account to save this →</b><div class="small" style="margin-top:6px">We logged your question. Sign up below to track it and get notified when it\'s answered.</div></div>';
     out.innerHTML='<div class="rhead">// you found the edge of the demo</div>'+
       '<div><b>Good question.</b> The demo only carries our pre-loaded answers — but the <b>full platform</b> answers this live, offline, on your own device, grounded in the manuals (and flags anything it\'s unsure of).</div>'+
-      '<div class="upsell"><b>Unlock the full platform →</b><div class="small" style="margin-top:6px">We logged your question. Members vote on what gets added next.</div></div>';
+      cta;
   }
-  // capture EVERY question (this is the market-research + nurture fuel)
-  if(sb && user){
-    sb.from('captured_questions').insert({ user_id:user.id, email:user.email, question:q, answered:!!hit }).then(function(){});
+  // capture EVERY question (market-research + nurture fuel) — anonymously too (user_id null)
+  if(sb){
+    sb.from('captured_questions').insert({
+      user_id: user ? user.id : null,
+      email: user ? user.email : null,
+      question: q, answered: !!hit
+    }).then(function(){});
   }
 }
 </script>
