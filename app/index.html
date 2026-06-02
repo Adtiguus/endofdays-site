@@ -1,0 +1,201 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>END OF DAYS — Member Portal</title>
+<style>
+ :root{--bg:#0c0f14;--panel:#131a24;--field:#1d2836;--ans:#0f141c;--line:#2a3644;
+   --amb:#ffb020;--steel:#7fa8c9;--ink:#eaf0f6;--mut:#8a98a8;--ok:#5ad17a;--red:#ff5a5a;--onacc:#1a1206;
+   --mono:ui-monospace,'Cascadia Code',Consolas,'DejaVu Sans Mono',monospace;}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{background:var(--bg);color:var(--ink);font-family:var(--mono);line-height:1.6;}
+ .wrap{max-width:640px;margin:0 auto;padding:0 16px 40px;}
+ .classbar{background:var(--panel);border-bottom:1px solid var(--line);text-align:center;
+   font-size:10px;letter-spacing:3px;color:var(--amb);text-transform:uppercase;padding:6px}
+ .top{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--line);margin-bottom:18px}
+ .logo{font-size:18px;letter-spacing:3px;color:var(--amb);text-transform:uppercase;font-weight:bold}
+ .logo small{display:block;font-size:9px;letter-spacing:2px;color:var(--mut)}
+ .demobar{background:#2a1c06;border:1px solid var(--amb);color:var(--amb);font-size:11px;letter-spacing:1px;
+   text-transform:uppercase;text-align:center;padding:8px;border-radius:6px;margin-bottom:16px}
+ .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:22px;margin-bottom:14px}
+ h1{font-size:22px;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+ .sub{color:var(--mut);font-size:13px;margin-bottom:16px}
+ label{display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--mut);margin:12px 0 5px}
+ input,textarea{width:100%;background:var(--field);color:var(--ink);border:1px solid var(--line);border-radius:6px;
+   padding:12px;font-family:var(--mono);font-size:15px;outline:none}
+ input:focus,textarea:focus{border-color:var(--amb)}
+ .btn{width:100%;margin-top:16px;padding:13px;font-family:var(--mono);font-size:13px;letter-spacing:2px;text-transform:uppercase;
+   border:none;border-radius:6px;background:var(--amb);color:var(--onacc);font-weight:bold;cursor:pointer}
+ .btn.ghost{background:transparent;color:var(--amb);border:1px solid var(--amb)}
+ .btn:disabled{opacity:.5;cursor:default}
+ .link{color:var(--steel);font-size:12px;cursor:pointer;text-align:center;margin-top:14px}
+ .link:hover{color:var(--ink)}
+ .msg{font-size:12px;margin-top:12px;padding:10px;border-radius:6px}
+ .msg.err{border:1px solid var(--red);background:#1f0c0c;color:#ff8c8c}
+ .msg.ok{border:1px solid var(--ok);background:#0c1f12;color:#9be7b4}
+ .field{position:relative}.field::before{content:">";position:absolute;left:11px;top:13px;color:var(--amb)}
+ #q{padding-left:26px}
+ .ans{background:var(--ans);border:1px solid var(--line);border-top:2px solid var(--amb);border-radius:0 0 6px 6px;
+   padding:16px;margin-top:14px;display:none}
+ .rhead{font-size:10px;letter-spacing:3px;color:var(--amb);text-transform:uppercase;margin-bottom:8px}
+ .src{font-size:11px;letter-spacing:1px;color:var(--steel);text-transform:uppercase;margin-top:8px}
+ .chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+ .chip{font-size:11px;color:var(--steel);border:1px solid var(--line);border-radius:14px;padding:5px 10px;cursor:pointer;background:var(--panel)}
+ .chip:hover{border-color:var(--amb);color:var(--ink)}
+ .upsell{border:1px solid var(--amb);border-radius:6px;padding:14px;margin-top:14px;background:#1a1206}
+ .small{font-size:11px;color:var(--mut)}
+ .hide{display:none}
+ a{color:var(--amb);text-decoration:none}
+</style></head>
+<body>
+<div class="classbar">// member portal // demo access //</div>
+<div class="wrap">
+  <div class="top">
+    <div class="logo">END OF DAYS<small>member portal</small></div>
+    <button class="btn ghost hide" id="logoutBtn" style="width:auto;margin:0;padding:8px 14px" onclick="doLogout()">Log out</button>
+  </div>
+
+  <!-- NOT CONFIGURED notice -->
+  <div class="card hide" id="cfgWarn">
+    <h1>Almost there</h1>
+    <p class="sub">This portal isn't connected to its database yet. (Waiting on the Supabase project URL + anon key.)</p>
+  </div>
+
+  <!-- AUTH -->
+  <div id="authView" class="hide">
+    <div class="card">
+      <h1 id="authTitle">Create your free account</h1>
+      <p class="sub" id="authSub">Free access to the survival demo. No card. We'll never sell your info.</p>
+      <div id="nameWrap">
+        <label>Name</label>
+        <input id="name" autocomplete="name" placeholder="Your name">
+      </div>
+      <label>Email</label>
+      <input id="email" type="email" autocomplete="email" placeholder="you@example.com">
+      <label>Password</label>
+      <input id="password" type="password" autocomplete="current-password" placeholder="••••••••">
+      <button class="btn" id="authBtn" onclick="doAuth()">Create free account</button>
+      <div class="link" id="toggleAuth" onclick="toggleMode()">Already a member? Log in</div>
+      <div id="authMsg"></div>
+    </div>
+    <p class="small" style="text-align:center">By continuing you agree to our terms &amp; privacy policy.</p>
+  </div>
+
+  <!-- PORTAL -->
+  <div id="portalView" class="hide">
+    <div class="demobar">⚠ Demo access — pre-loaded answers only. The full platform answers anything, offline, on your own device.</div>
+    <div class="card">
+      <h1>Ask a survival question</h1>
+      <p class="sub" id="welcome"></p>
+      <div class="field"><input id="q" maxlength="160" placeholder="how do i purify water without power" autocomplete="off"></div>
+      <div class="chips" id="chips"></div>
+      <button class="btn" onclick="ask()">Transmit query</button>
+      <div class="ans" id="ans"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ====== CONFIG — paste your Supabase values here ====== */
+var SUPABASE_URL = "YOUR_PROJECT_URL";
+var SUPABASE_ANON_KEY = "YOUR_ANON_KEY";
+/* ====================================================== */
+
+var sb = null, mode = "signup", user = null;
+var configured = SUPABASE_URL.indexOf("YOUR_") === -1 && SUPABASE_ANON_KEY.indexOf("YOUR_") === -1;
+
+/* ---- the demo Q&A (illustrative; the real 1,000 move to the DB later) ---- */
+var QA=[
+ {k:["water","purify","drink","boil"],a:"Bring it to a rolling boil for 1 minute (3 min above ~6,500 ft). Cool covered. Cloudy? Filter through cloth first. No heat? 8 drops unscented bleach per gallon, wait 30 min.",s:"Where There Is No Doctor"},
+ {k:["fire","matches","spark"],a:"Build a tinder bundle (dry grass, bark shavings). Scrape ferro-rod sparks into it, transfer the ember to kindling, breathe steadily.",s:"SAS Survival Guide"},
+ {k:["cut","wound","bleed","bleeding"],a:"Firm direct pressure with the cleanest cloth available — don't peek. Elevate. Soaked through? Add cloth on top, don't remove the first layer. Seek care ASAP. (Informational, not medical advice.)",s:"Where There Is No Doctor"},
+ {k:["north","compass","direction","lost"],a:"Stick-and-shadow: plant a stick, mark the shadow tip, wait 15 min, mark again — the line runs roughly east–west, first mark is west. At night find Polaris off the Big Dipper's pointers.",s:"Army FM 21-76"},
+ {k:["food","store","preserve","spoil"],a:"Drying and salting are most reliable with no power. Keep roots cool, dark, dry. A buried shaded box extends shelf life. Inspect daily.",s:"Wikibooks"},
+ {k:["hypothermia","cold","freezing"],a:"Dry them, out of wind. Replace wet clothing, insulate from ground, warm the core (chest/neck) skin-to-skin. Warm sweet drinks if alert. Handle gently. (Informational, not medical advice.)",s:"Where There Is No Doctor"}
+];
+function match(q){q=q.toLowerCase();var best=null,sc=0;QA.forEach(function(i){var s=0;i.k.forEach(function(w){if(q.indexOf(w)>-1)s++});if(s>sc){sc=s;best=i}});return sc>0?best:null;}
+
+/* ---- boot ---- */
+window.addEventListener('DOMContentLoaded', function(){
+  var cb=document.getElementById('chips');
+  ["purify water","start a fire","treat a deep cut","find north","store food"].forEach(function(c){
+    var s=document.createElement('span');s.className='chip';s.textContent=c;
+    s.onclick=function(){document.getElementById('q').value=c;ask();};cb.appendChild(s);
+  });
+});
+
+if(!configured){
+  document.getElementById('cfgWarn').classList.remove('hide');
+} else {
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  sb.auth.onAuthStateChange(function(_e, session){ render(session); });
+  sb.auth.getSession().then(function(r){ render(r.data.session); });
+}
+
+function render(session){
+  user = session ? session.user : null;
+  document.getElementById('authView').classList.toggle('hide', !!user);
+  document.getElementById('portalView').classList.toggle('hide', !user);
+  document.getElementById('logoutBtn').classList.toggle('hide', !user);
+  if(user){
+    var nm = (user.user_metadata && user.user_metadata.name) || user.email;
+    document.getElementById('welcome').textContent = "Signed in as " + nm + " · demo access";
+    // upsert profile (capture user info)
+    sb.from('profiles').upsert({ id:user.id, email:user.email, name:(user.user_metadata&&user.user_metadata.name)||null }).then(function(){});
+  }
+}
+
+function toggleMode(){
+  mode = mode==="signup" ? "login" : "signup";
+  document.getElementById('authTitle').textContent = mode==="signup" ? "Create your free account" : "Welcome back";
+  document.getElementById('authSub').textContent = mode==="signup" ? "Free access to the survival demo. No card. We'll never sell your info." : "Log in to your member portal.";
+  document.getElementById('authBtn').textContent = mode==="signup" ? "Create free account" : "Log in";
+  document.getElementById('toggleAuth').textContent = mode==="signup" ? "Already a member? Log in" : "Need an account? Sign up free";
+  document.getElementById('nameWrap').classList.toggle('hide', mode==="login");
+  msg('authMsg','');
+}
+
+function doAuth(){
+  var email=document.getElementById('email').value.trim();
+  var pw=document.getElementById('password').value;
+  var name=document.getElementById('name').value.trim();
+  if(!email||!pw){ return msg('authMsg','Email and password required.','err'); }
+  document.getElementById('authBtn').disabled=true;
+  var p = mode==="signup"
+    ? sb.auth.signUp({ email:email, password:pw, options:{ data:{ name:name } } })
+    : sb.auth.signInWithPassword({ email:email, password:pw });
+  p.then(function(res){
+    document.getElementById('authBtn').disabled=false;
+    if(res.error){ return msg('authMsg', res.error.message, 'err'); }
+    if(mode==="signup" && !res.data.session){
+      msg('authMsg','Account created! Check your email to confirm, then log in.','ok');
+    }
+  });
+}
+
+function doLogout(){ sb.auth.signOut(); }
+
+function msg(id, text, type){
+  var el=document.getElementById(id);
+  el.innerHTML = text ? '<div class="msg '+(type||'')+'">'+text+'</div>' : '';
+}
+
+function ask(){
+  var q=document.getElementById('q').value.trim();
+  var out=document.getElementById('ans');
+  if(!q) return;
+  var hit=match(q);
+  out.style.display='block';
+  if(hit){
+    out.innerHTML='<div class="rhead">// response</div><div>'+hit.a+'</div><div class="src">// src: library ['+hit.s+']</div>';
+  } else {
+    out.innerHTML='<div class="rhead">// you found the edge of the demo</div>'+
+      '<div><b>Good question.</b> The demo only carries our pre-loaded answers — but the <b>full platform</b> answers this live, offline, on your own device, grounded in the manuals (and flags anything it\'s unsure of).</div>'+
+      '<div class="upsell"><b>Unlock the full platform →</b><div class="small" style="margin-top:6px">We logged your question. Members vote on what gets added next.</div></div>';
+  }
+  // capture EVERY question (this is the market-research + nurture fuel)
+  if(sb && user){
+    sb.from('captured_questions').insert({ user_id:user.id, email:user.email, question:q, answered:!!hit }).then(function(){});
+  }
+}
+</script>
+</body></html>
