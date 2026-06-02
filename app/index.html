@@ -95,10 +95,10 @@
     <div id="memberBox" class="hide">
       <div class="card hide" id="downloadCard">
         <h1>Your platform download</h1>
-        <p class="sub">Members-only — this is the paid installer. Keep your link private.</p>
-        <a class="btn" id="dlBtn" href="#" target="_blank" rel="noopener">Download the platform</a>
-        <p class="small" id="dlVer" style="text-align:center;margin-top:8px"></p>
-        <p class="small" style="margin-top:10px">Setup: get a verified mini-PC, unzip, run <b>./00_install_offgrid.sh</b>, then join the box's Wi-Fi from your phone.</p>
+        <p class="sub">Members-only. Verified against your account each time — the link can't be shared.</p>
+        <button class="btn" id="dlBtn" onclick="downloadInstaller()">Download the platform</button>
+        <p class="small" id="dlMsg" style="text-align:center;margin-top:8px"></p>
+        <p class="small" style="margin-top:10px">On a verified mini-PC: <b>tar -xzf EndOfDays-platform.tar.gz</b> → <b>cd endofdays-platform</b> → <b>./00_install_offgrid.sh</b>, then join the box's Wi-Fi from your phone.</p>
       </div>
       <div class="card" id="upgradeCard">
         <h1>Unlock the full platform</h1>
@@ -114,6 +114,8 @@
 /* ====== CONFIG — paste your Supabase values here ====== */
 var SUPABASE_URL = "https://hcxbuomybreemkndzxnd.supabase.co";
 var SUPABASE_ANON_KEY = "sb_publishable_ObUcKxAvQLBrYl63sZivTA_ugG0HLXc";
+// Cloudflare Worker that gates the download (see R2-DELIVERY.md). Paste your URL:
+var DOWNLOAD_ENDPOINT = "https://eod-download.CHANGE-ME.workers.dev";
 /* ====================================================== */
 
 var sb = null, mode = "signup", user = null;
@@ -175,14 +177,28 @@ function checkEntitlement(){
   });
 }
 function loadDownload(){
-  // releases is readable ONLY by paid members (RLS), so free/anon visitors never receive the link
-  sb.from('releases').select('url,version').eq('id','installer').maybeSingle().then(function(r){
-    if(r.data && r.data.url){
-      document.getElementById('dlBtn').href = r.data.url;
-      document.getElementById('dlVer').textContent = r.data.version ? ('Version ' + r.data.version) : '';
-      document.getElementById('downloadCard').classList.remove('hide');
+  // the gated Worker serves the file on demand — there is NO link to leak, so we
+  // just reveal the button. The actual fetch re-checks paid status server-side.
+  document.getElementById('downloadCard').classList.remove('hide');
+}
+async function downloadInstaller(){
+  var btn=document.getElementById('dlBtn'), msg=document.getElementById('dlMsg');
+  if(DOWNLOAD_ENDPOINT.indexOf('CHANGE-ME')>-1){ msg.textContent='Download isn\'t switched on yet — try again shortly.'; return; }
+  var label=btn.textContent; btn.disabled=true; btn.textContent='Preparing…'; msg.textContent='';
+  try{
+    var sess=(await sb.auth.getSession()).data.session;
+    if(!sess){ msg.textContent='Please log in again.'; btn.disabled=false; btn.textContent=label; return; }
+    var res=await fetch(DOWNLOAD_ENDPOINT,{headers:{Authorization:'Bearer '+sess.access_token}});
+    if(!res.ok){
+      msg.textContent = res.status===403 ? 'Active membership required.' : ('Download error ('+res.status+').');
+      btn.disabled=false; btn.textContent=label; return;
     }
-  });
+    var blob=await res.blob();
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a'); a.href=url; a.download='EndOfDays-platform.tar.gz';
+    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    msg.textContent='Downloaded ✓'; btn.disabled=false; btn.textContent=label;
+  }catch(e){ msg.textContent='Download failed — try again.'; btn.disabled=false; btn.textContent=label; }
 }
 
 function toggleMode(){
