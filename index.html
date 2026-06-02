@@ -41,8 +41,9 @@
  .grid{display:grid;gap:16px}
  .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:repeat(2,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
  @media(max-width:760px){.g3,.g2,.g4{grid-template-columns:1fr}}
- .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:20px}
+ .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:20px;display:flex;flex-direction:column}
  .card.acc{border-top:3px solid var(--amb)}
+ .card .btn{margin-top:auto}
  /* trust callout */
  .trust{background:var(--ans);border:1px solid var(--line);border-left:3px solid var(--amb);border-radius:6px;padding:18px;margin-top:14px}
  .srcline{font-size:11px;letter-spacing:1px;color:var(--steel);text-transform:uppercase;margin-top:8px}
