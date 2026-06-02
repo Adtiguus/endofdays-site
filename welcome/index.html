@@ -1,0 +1,86 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>END OF DAYS — You're In</title>
+<style>
+ :root{--bg:#0c0f14;--panel:#131a24;--line:#2a3644;--amb:#ffb020;--steel:#7fa8c9;--ink:#eaf0f6;--mut:#8a98a8;--ok:#5ad17a;--onacc:#1a1206;
+   --mono:ui-monospace,'Cascadia Code',Consolas,'DejaVu Sans Mono',monospace;}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{background:var(--bg);color:var(--ink);font-family:var(--mono);line-height:1.7;display:flex;flex-direction:column;min-height:100vh}
+ .classbar{background:var(--panel);border-bottom:1px solid var(--line);text-align:center;font-size:10px;letter-spacing:3px;color:var(--amb);text-transform:uppercase;padding:6px}
+ .wrap{max-width:620px;margin:0 auto;padding:48px 18px;flex:1}
+ .logo{font-size:18px;letter-spacing:3px;color:var(--amb);text-transform:uppercase;font-weight:bold;text-align:center;margin-bottom:28px}
+ .check{width:58px;height:58px;border:2px solid var(--ok);border-radius:50%;color:var(--ok);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 18px;box-shadow:0 0 18px rgba(90,209,122,.3)}
+ h1{font-size:26px;letter-spacing:1px;text-transform:uppercase;text-align:center;margin-bottom:10px}
+ .sub{color:var(--steel);text-align:center;margin-bottom:26px}
+ .card{background:var(--panel);border:1px solid var(--line);border-top:2px solid var(--amb);border-radius:8px;padding:22px;margin-bottom:16px}
+ .rhead{font-size:10px;letter-spacing:3px;color:var(--amb);text-transform:uppercase;margin-bottom:12px}
+ .step{display:flex;gap:12px;margin-bottom:12px;font-size:14px;color:#cdd7e1}
+ .num{color:var(--amb);font-weight:bold;flex-shrink:0}
+ .mut{color:var(--mut);font-size:13px}
+ .btn{display:inline-block;background:var(--amb);color:var(--onacc);font-family:var(--mono);font-weight:bold;padding:13px 24px;letter-spacing:2px;text-transform:uppercase;font-size:13px;border-radius:6px;text-decoration:none;margin-top:8px}
+ .btn.ghost{background:transparent;color:var(--amb);border:1px solid var(--amb)}
+ .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:22px}
+ footer{text-align:center;font-size:11px;color:var(--mut);padding:20px}
+ a{color:var(--amb)}
+</style></head>
+<body>
+<div class="classbar">// welcome to the club //</div>
+<div class="wrap">
+  <div class="logo">END OF DAYS</div>
+  <div class="check">✓</div>
+  <h1 id="title">You're in.</h1>
+  <p class="sub" id="sub">Payment received. Welcome to End of Days.</p>
+
+  <div class="card">
+    <div class="rhead">// what happens next</div>
+    <div id="steps"></div>
+  </div>
+
+  <div class="card">
+    <div class="rhead">// need anything?</div>
+    <p class="mut">Questions, hiccups, or didn't get your email within a few minutes (check spam)? Reach us at <a href="mailto:adam@endofdays.ai">adam@endofdays.ai</a> and we'll sort it fast.</p>
+  </div>
+
+  <div class="row">
+    <a class="btn" href="/app/">Open the portal</a>
+    <a class="btn ghost" href="/">Back to site</a>
+  </div>
+</div>
+<footer>End of Days — offline knowledge that never goes dark.</footer>
+
+<script>
+ // ?type=membership  or  ?type=box  customizes the message; defaults to a general welcome.
+ var type = (new URLSearchParams(location.search).get('type') || 'membership').toLowerCase();
+ var T = {
+  membership: {
+   title: "You're in.",
+   sub: "Membership confirmed. Welcome to the club.",
+   steps: [
+     "Check your email — your platform download, setup guide, and the verified-hardware list are on the way (within a few minutes).",
+     "Grab your mini-PC from the verified list (or use one you have).",
+     "Run the one-click setup, connect your phone, and you're off-grid ready.",
+     "Jump into the community for help and the latest library updates."
+   ]
+  },
+  box: {
+   title: "Order confirmed.",
+   sub: "Your End of Days box is on the build bench.",
+   steps: [
+     "Check your email for your order confirmation and details.",
+     "We source, build, image, and test your box to order.",
+     "It ships in about 1–2 weeks — you'll get tracking by email.",
+     "When it arrives: plug in, connect your phone to the 'EndOfDays' Wi-Fi, done. No setup."
+   ]
+  }
+ };
+ var d = T[type] || T.membership;
+ document.getElementById('title').textContent = d.title;
+ document.getElementById('sub').textContent = d.sub;
+ var s = document.getElementById('steps');
+ d.steps.forEach(function(text,i){
+   var row=document.createElement('div');row.className='step';
+   row.innerHTML='<span class="num">'+(i+1)+'</span><span>'+text+'</span>';
+   s.appendChild(row);
+ });
+</script>
+</body></html>
