@@ -15,7 +15,7 @@
  /* nav */
  nav{position:sticky;top:0;z-index:50;background:rgba(12,15,20,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
  .navin{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;max-width:980px;margin:0 auto;flex-wrap:wrap;gap:8px}
- .brand{font-size:16px;letter-spacing:3px;color:var(--amb);text-transform:uppercase;font-weight:bold}
+ .brand{font-size:20px;letter-spacing:3px;color:var(--amb);text-transform:uppercase;font-weight:bold}
  .brand small{display:block;font-size:8px;letter-spacing:2px;color:var(--mut)}
  .navlinks{display:flex;gap:14px;font-size:11px;letter-spacing:1px;text-transform:uppercase;flex-wrap:wrap}
  .navlinks a{color:var(--mut)} .navlinks a:hover{color:var(--ink)}
@@ -25,12 +25,12 @@
  /* sections */
  section{padding:64px 0;border-bottom:1px solid var(--line)}
  .tag{font-size:10px;letter-spacing:3px;color:var(--amb);text-transform:uppercase;margin-bottom:14px}
- h1{font-size:clamp(28px,5vw,52px);letter-spacing:1px;line-height:1.15;text-transform:uppercase;margin-bottom:18px}
+ h1{font-size:clamp(34px,8vw,60px);letter-spacing:1px;line-height:1.1;text-transform:uppercase;margin-bottom:16px}
  h2{font-size:clamp(22px,3.5vw,34px);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
  h3{font-size:16px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
  p{margin-bottom:14px;color:#cdd7e1}
  .lead{font-size:18px;color:var(--steel)}
- .hero{padding:80px 0 70px;background:linear-gradient(180deg,var(--panel),var(--bg))}
+ .hero{padding:44px 0 30px;background:linear-gradient(180deg,var(--panel),var(--bg))}
  .classbar{background:var(--panel);border-bottom:1px solid var(--line);text-align:center;
    font-size:10px;letter-spacing:3px;color:var(--amb);text-transform:uppercase;padding:6px}
  .btn{display:inline-block;background:var(--amb);color:var(--onacc);font-family:var(--mono);font-weight:bold;
@@ -40,7 +40,7 @@
  .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
  .grid{display:grid;gap:16px}
  .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:repeat(2,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
- @media(max-width:760px){.g3,.g2,.g4{grid-template-columns:1fr}}
+ @media(max-width:760px){.g3,.g2,.g4{grid-template-columns:1fr}section{padding:36px 0}.hero{padding:28px 0 22px}}
  .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:20px;display:flex;flex-direction:column}
  .card.acc{border-top:3px solid var(--amb)}
  .card .btn{margin-top:auto}
@@ -262,17 +262,14 @@
 <section id="affiliates"><div class="wrap">
   <div class="tag">// partner program</div>
   <h2>Get paid to spread the word.</h2>
-  <p class="lead">Believe people should be ready? Earn for everyone you bring to the club.</p>
-  <div class="grid g2" style="margin-top:18px">
-    <div class="card acc"><div class="price">$5</div><p class="mut">for every <b>lifetime membership</b> bought through your link.</p></div>
-    <div class="card acc"><div class="price">$15</div><p class="mut">for every <b>box</b> ordered through your link.</p></div>
-  </div>
+  <p class="lead">Believe people should be ready? Join the affiliate program and earn for everyone you bring to the club.</p>
   <ul class="feat" style="margin-top:16px">
-    <li>Get your own referral link — share it anywhere</li>
-    <li>Track your referrals &amp; earnings</li>
-    <li>Paid out monthly</li>
+    <li>Earn on every membership <b>and</b> every box you refer</li>
+    <li>Your own referral link — share it anywhere</li>
+    <li>Track referrals &amp; earnings · paid monthly</li>
   </ul>
-  <div class="row" style="margin-top:8px"><a class="btn" href="mailto:adam@endofdays.ai?subject=Become%20an%20End%20of%20Days%20Affiliate">Become an affiliate</a></div>
+  <div class="row" style="margin-top:10px"><a class="btn" href="mailto:adam@endofdays.ai?subject=End%20of%20Days%20Affiliate%20Application">Apply to become an affiliate</a></div>
+  <p class="tnote">Quick application — we'll send your referral link and commission details.</p>
 </div></section>
 
 <!-- FAQ -->
@@ -296,6 +293,7 @@
 <script>
 /* ---- themes (shared with the device UI) ---- */
 var THEMES={
+ light:{lbl:"Light",sw:"#eef2f6",v:{"--bg":"#eef2f6","--panel":"#ffffff","--field":"#f1f4f7","--ans":"#ffffff","--line":"#d3dae1","--amb":"#c47a00","--steel":"#3c5a73","--ink":"#18222d","--mut":"#5e6c7b","--ok":"#178a4e","--red":"#c62828","--onacc":"#2a1c06"}},
  amber:{lbl:"Amber",sw:"#ffb020",v:{"--bg":"#0c0f14","--panel":"#131a24","--field":"#1d2836","--ans":"#0f141c","--line":"#2a3644","--amb":"#ffb020","--steel":"#7fa8c9","--ink":"#eaf0f6","--mut":"#8a98a8","--ok":"#5ad17a","--red":"#ff5a5a","--onacc":"#1a1206"}},
  cyan:{lbl:"Gunmetal",sw:"#26c6d6",v:{"--bg":"#0b0f12","--panel":"#141b20","--field":"#1a262d","--ans":"#0e141a","--line":"#263138","--amb":"#26c6d6","--steel":"#6f93a8","--ink":"#e6eef2","--mut":"#7f93a0","--ok":"#45d39a","--red":"#ff6b6b","--onacc":"#04181a"}},
  night:{lbl:"Night",sw:"#ff3b3b",v:{"--bg":"#0a0505","--panel":"#160a0a","--field":"#1f0d0d","--ans":"#100707","--line":"#3a1c1c","--amb":"#ff3b3b","--steel":"#cf8a8a","--ink":"#ffd6d6","--mut":"#9e6060","--ok":"#ff6b6b","--red":"#ff6b6b","--onacc":"#1a0000"}},
